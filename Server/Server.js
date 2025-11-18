@@ -44,6 +44,7 @@ app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 
+if(process.env.NODE_ENV!=="production"){
 const startServer = async () => {
   try {
     await connectDB();
@@ -54,5 +55,8 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+};
 
 startServer();
+//export server for vercel
+export default server;
