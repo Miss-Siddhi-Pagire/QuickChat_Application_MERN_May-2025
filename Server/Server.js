@@ -44,19 +44,19 @@ app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 
-if(process.env.NODE_ENV!=="production"){
+// 🚀 CORRECT: Define startServer in NORMAL scope, not inside any IF
 const startServer = async () => {
   try {
     await connectDB();
     const PORT = process.env.PORT || 5000;
-    server.listen(PORT, () => console.log(`✅ Server running on PORT ${PORT}`));
+    server.listen(PORT, () =>
+      console.log(`🚀 Server running on PORT ${PORT}`)
+    );
   } catch (err) {
     console.error("❌ DB Connection Failed:", err);
     process.exit(1);
   }
 };
-};
 
+// 🚀 CORRECT: Just call it directly
 startServer();
-//export server for vercel
-export default server;
