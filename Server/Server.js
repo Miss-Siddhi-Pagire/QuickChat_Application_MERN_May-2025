@@ -44,7 +44,7 @@ app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 
-// 🚀 CORRECT: Define startServer in NORMAL scope, not inside any IF
+// 🚀 DEFINE startServer OUTSIDE ANY IF STATEMENT
 const startServer = async () => {
   try {
     await connectDB();
@@ -58,5 +58,7 @@ const startServer = async () => {
   }
 };
 
-// 🚀 CORRECT: Just call it directly
+// 🚀 CALL the function
 startServer();
+
+export default server;
