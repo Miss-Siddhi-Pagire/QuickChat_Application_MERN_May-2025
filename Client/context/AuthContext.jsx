@@ -13,6 +13,19 @@ export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  const logoutCleanup = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setAuthUser(null);
+    setOnlineUsers([]);
+    delete axios.defaults.headers.common["token"];
+    if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -20,9 +33,14 @@ export const AuthProvider = ({ children }) => {
       if (data.success) {
         setAuthUser(data.user);
         connectSocket(data.user);
+      } else {
+        logoutCleanup();
       }
     } catch (error) {
-      toast.error(error.message || "Authentication check failed");
+      console.error("Auth check failed:", error);
+      logoutCleanup();
+    } finally {
+      setIsCheckingAuth(false);
     }
   };
 
@@ -40,21 +58,14 @@ export const AuthProvider = ({ children }) => {
         toast.error(data.message || "Login/Signup failed");
       }
     } catch (error) {
-      toast.error(error.message || "Something went wrong during login/signup");
+      const errMsg = error.response?.data?.message || error.message || "Something went wrong during login/signup";
+      toast.error(errMsg);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setAuthUser(null);
-    setOnlineUsers([]);
-    axios.defaults.headers.common["token"] = null;
+    logoutCleanup();
     toast.success("Logged out successfully");
-    if (socket) {
-      socket.disconnect();
-      setSocket(null);
-    }
   };
 
   const updateProfile = async (body) => {
@@ -67,7 +78,8 @@ export const AuthProvider = ({ children }) => {
         toast.error(data.message || "Profile update failed");
       }
     } catch (error) {
-      toast.error(error.message || "Something went wrong during profile update");
+      const errMsg = error.response?.data?.message || error.message || "Something went wrong during profile update";
+      toast.error(errMsg);
     }
   };
 
@@ -93,6 +105,8 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       axios.defaults.headers.common["token"] = token;
       checkAuth();
+    } else {
+      setIsCheckingAuth(false);
     }
   }, [token]);
 
@@ -103,6 +117,7 @@ export const AuthProvider = ({ children }) => {
         authUser,
         onlineUsers,
         socket,
+        isCheckingAuth,
         login,
         logout,
         updateProfile,

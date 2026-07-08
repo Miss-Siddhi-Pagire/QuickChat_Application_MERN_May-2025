@@ -8,19 +8,17 @@ const HomePage = () => {
   const { selectedUser } = useContext(ChatContext);
 
   return (
-    <div className="w-full h-screen bg-cover bg-center" style={{ backgroundImage: "url('/background.jpg')" }}>
-      <div className="w-full h-full bg-black/30 sm:px-[5%] sm:py-[3%] flex items-center justify-center">
-        <div
-          className={`w-full h-full backdrop-blur-lg bg-white/10 border border-gray-500 rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 transition-all duration-300 
-          ${selectedUser 
-            ? 'md:grid-cols-[1fr_1.5fr_1fr] xl:grid-cols-[1fr_2fr_1fr]' 
-            : 'md:grid-cols-[1fr_2fr]'
-          }`}
-        >
-          <SideBar />
-          <ChatContainer />
-          {selectedUser && <RightSideBar />}
-        </div>
+    <div className="w-full h-screen bg-[#6F36D4] sm:p-[2.5%] flex items-center justify-center">
+      <div
+        className={`w-full h-full grid grid-cols-1 gap-4 md:gap-6 transition-all duration-300 
+        ${selectedUser 
+          ? 'md:grid-cols-[1fr_1.5fr_1fr] xl:grid-cols-[1fr_2.2fr_1.1fr]' 
+          : 'md:grid-cols-[1fr_2.2fr]'
+        }`}
+      >
+        <SideBar />
+        <ChatContainer />
+        {selectedUser && <RightSideBar />}
       </div>
     </div>
   );

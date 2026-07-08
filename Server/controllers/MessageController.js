@@ -28,7 +28,7 @@ export const getUserForSidebar = async (req, res) => {
     res.json({ success: true, users: filteredUsers, unseenMessage });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -53,7 +53,7 @@ export const getMessage = async (req, res) => {
     res.json({ success: true, messages });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -65,7 +65,7 @@ export const markMessageSeen = async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -90,15 +90,17 @@ export const sendMessage = async (req, res) => {
     });
 
     const io = getSocketServerInstance();
-    const receiverSocketId = getUserSocketMap()[receiverId];
+    const receiverSocketIds = getUserSocketMap()[receiverId];
 
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
+    if (receiverSocketIds && Array.isArray(receiverSocketIds)) {
+      receiverSocketIds.forEach((socketId) => {
+        io.to(socketId).emit("newMessage", newMessage);
+      });
     }
 
     res.json({ success: true, newMessage });
   } catch (error) {
     console.log(error.message);
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

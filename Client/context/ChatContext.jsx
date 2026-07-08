@@ -43,14 +43,6 @@ export const ChatProvider = ({ children }) => {
       const { data } = await axios.post(`/api/messages/send/${selectedUser._id}`, messageData);
       if (data.success) {
         setMessages((prevMessages) => [...prevMessages, data.newMessage]);
-
-        // ✅ emit to receiver via socket
-        if (socket && selectedUser) {
-          socket.emit("sendMessage", {
-            message: data.newMessage,
-            receiverId: selectedUser._id,
-          });
-        }
       } else {
         toast.error(data.message || "Failed to send message");
       }

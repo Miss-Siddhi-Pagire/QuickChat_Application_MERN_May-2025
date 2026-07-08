@@ -22,38 +22,49 @@ const RightSideBar = () => {
 
 
   return selectedUser && (
-    <div className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${selectedUser ? "max-md:hidden" : " "}`}>
+    <div className={`bg-white text-slate-800 border-[6px] border-[#6F36D4] h-full rounded-[2rem] shadow-2xl relative overflow-y-auto flex flex-col p-6 pb-24 ${selectedUser ? "max-md:hidden" : ""}`}>
 
-      <div className='pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
-        <img
-          src={selectedUser?.profilePic || assets.avatar_icon}
-          onError={(e) => (e.target.src = assets.avatar_icon)}
-          alt=""
-          className="w-20 aspect-[1/1] rounded-full"
-        /><h1 className='px-10 text-xl font-medium mx-auto flex items-center gap-2'>
-
-          {onlineUsers.includes(selectedUser._id) && <p className='w-2 h-2 rounded-full bg-green-500'></p>}
-          {selectedUser.fullName}
-        </h1>
-        <p className='px-10 mx-auto'>{selectedUser.bio}</p>
+      <div className='flex flex-col items-center gap-3 text-center mt-6 select-none'>
+        <div className="relative">
+          <img
+            src={selectedUser?.profilePic || assets.avatar_icon}
+            onError={(e) => (e.target.src = assets.avatar_icon)}
+            alt=""
+            className="w-20 h-20 object-cover rounded-full border border-slate-200 shadow-sm"
+          />
+          {onlineUsers.includes(selectedUser._id) && (
+            <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-white shadow-sm shadow-green-500/30"></span>
+          )}
+        </div>
+        <h1 className='text-lg font-bold text-slate-800 break-all px-4'>{selectedUser.fullName}</h1>
+        <p className='text-xs text-slate-400 font-medium tracking-wide max-w-[200px] break-all px-2'>"{selectedUser.bio || "No bio available"}"</p>
       </div>
 
-      <hr className='border-[#ffffff50] my-4' />
+      <hr className='border-slate-100 my-6' />
 
-      <div className='px-5 text-xs'>
-        <p>Media</p>
-        <div className='mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80'>
-          {msgImages.map((url, index) => (
-            <div key={index} onClick={() => window.open(url)} className='cursor-pointer rounded'>
-              <img src={url} alt='' className='h-full rounded-md' />
-            </div>
-          ))}
-        </div>
+      <div className='px-2'>
+        <p className='text-xs font-semibold text-slate-400 uppercase tracking-wider select-none'>Shared Media</p>
+        {msgImages.length > 0 ? (
+          <div className='mt-3 overflow-y-auto max-h-[160px] grid grid-cols-3 gap-2'>
+            {msgImages.map((url, index) => (
+              <div 
+                key={index} 
+                onClick={() => window.open(url)} 
+                className='cursor-pointer rounded-xl overflow-hidden'
+              >
+                <img src={url} alt='Media' className='w-full aspect-square object-cover hover:brightness-90 transition-all shadow-sm' />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-slate-400 italic mt-2">No media shared yet</p>
+        )}
       </div>
 
       <button
         onClick={() => logout()}
-        className='absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to bg-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>
+        className='absolute bottom-6 left-6 right-6 py-3 bg-[#6F36D4] hover:bg-[#5b29b8] text-white font-medium rounded-full cursor-pointer hover:shadow-lg hover:shadow-purple-500/20 active:scale-[0.98] transition-all text-sm text-center select-none border-none'
+      >
         Logout
       </button>
 

@@ -8,9 +8,18 @@ import { AuthContext } from '../context/AuthContext'
 
 
 const App = () => {
-  const {authUser}=useContext(AuthContext);
+  const { authUser, isCheckingAuth } = useContext(AuthContext);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#6F36D4] text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-[url('/bgimg1.jpg')] bg-contain">
+    <div className="bg-[#6F36D4] min-h-screen">
       <Toaster/>      
       <Routes>
         <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>

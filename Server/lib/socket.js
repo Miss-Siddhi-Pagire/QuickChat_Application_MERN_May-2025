@@ -1,5 +1,5 @@
 let io = null;
-let userSocketMap = {}; // { userId: socketId }
+let userSocketMap = {}; // { userId: [socketId1, socketId2] }
 
 export const setSocketServerInstance = (ioInstance) => {
   io = ioInstance;
@@ -10,11 +10,21 @@ export const getSocketServerInstance = () => io;
 export const getUserSocketMap = () => userSocketMap;
 
 export const setUserSocket = (userId, socketId) => {
-  userSocketMap[userId] = socketId;
+  if (!userSocketMap[userId]) {
+    userSocketMap[userId] = [];
+  }
+  if (!userSocketMap[userId].includes(socketId)) {
+    userSocketMap[userId].push(socketId);
+  }
 };
 
-export const removeUserSocket = (userId) => {
-  delete userSocketMap[userId];
+export const removeUserSocket = (userId, socketId) => {
+  if (userSocketMap[userId]) {
+    userSocketMap[userId] = userSocketMap[userId].filter((id) => id !== socketId);
+    if (userSocketMap[userId].length === 0) {
+      delete userSocketMap[userId];
+    }
+  }
 };
 
 

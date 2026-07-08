@@ -4,14 +4,18 @@ import User from "../models/User.js";
 export const protectRoute = async (req, res, next) => {
     try {
         const token = req.headers.token;
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Unauthorized - No token provided" });
+        }
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.userId).select("-password");
 
-        if (!user) return res.json({ success: false, message: "User not found" });
+        if (!user) return res.status(401).json({ success: false, message: "Unauthorized - User not found" });
         req.user = user;
         next();
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.log("Error in protectRoute middleware:", error.message);
+        const status = (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") ? 401 : 500;
+        res.status(status).json({ success: false, message: error.message || "Internal Server Error" });
     }
 };
